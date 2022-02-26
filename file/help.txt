@@ -1,0 +1,12 @@
+contoh di Template.json
+
+weight calculation
+jumlah kolom: jumlah neuron layer tersebut + 1(bias)
+jumlah baris: jumlah next layer
+    Contoh: di input ada 3 kolom karena inputCount dia 2 lalu +1 dari bias. baris ada 4 karena next layer countnya 4.
+
+per kolom: weight layer tersebut buat semua neuron selanjutnya
+per baris: buat sebuah neuron selanjutnya, itu nilai bias+w1*x.... dia
+    Contoh hidden layer 2 punya [1,2] dari bias ==> buat hidden layer 3 neuron 1 bakal punya nilai 1 dari bias pred, neuron 2 punya nilai 2 dari bias pred
+    Misal mau ambil buat neuron 2 hidden layer 1 berarti weightnya bakal diambil dari input (predecessor dia) baris 2
+

@@ -1,3 +1,19 @@
 {
-    
+    "name": "XOR",
+    "inputCount": 2,
+    "inputWeights": [
+        [-10,20,20],
+        [30,-20,-20]
+    ],
+    "hiddenLayerCount": 1,
+    "hiddenLayers": [
+        {
+            "id":1,
+            "neurons": 2,
+            "weights": [
+                [-30,20,20]
+            ]
+        }
+        
+    ]
 }
