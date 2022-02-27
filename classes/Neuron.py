@@ -27,10 +27,10 @@ class Neuron:
             return sigmoid(self.weight, input, self.bias)
         else: #algo == softmax
             #- softmax implementation belum
-            return linear(self.weight,input,self.bias)
+            return softmax(input)
 
     #function to set weight to neuron 
-    def set_weight(self, new_weight:list[float]):
+    def setWeight(self, new_weight:list[float]):
         self.weight = new_weight
 
     def update(self, ) -> None:
