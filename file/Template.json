@@ -1,28 +1,46 @@
 {
-    "name": "XOR",
-    "inputCount": 2,
-    "inputWeights": [
-        [1,2,3],
-        [4,5,6],
-        [7,8,9],
-        [10,11,12]
-    ],
-    "hiddenLayerCount": 2,
+    "name": "SAMPLE MODEL",
+    "inputLayerNeuron": 12,
+    "inputLayerBias": 1.0,
     "hiddenLayers": [
         {
-            "id":2,
-            "neurons":3,
+            "id":1,
+            "neurons": 2,
+            "algorithm": "linear",
+            "bias": 1.0,
             "weights": [
-                [1, 2,3,4],
-                [5, 6,7,8]
+                [1,9,3,3,2,6,7,6,5,4,2,0,-3],
+                [-2,-9,12,3,-8,-3,7,1,2,-9,-9,0,9]
+            ]
+        },
+        {
+            "id":2,
+            "neurons": 4,
+            "algorithm": "relu",
+            "bias": 1.0,
+            "weights": [
+                [2,1,4],
+                [-1,4,-8],
+                [3,-3,9],
+                [1,0,1]
             ]
         },
         {
             "id":3,
             "neurons": 2,
+            "algorithm": "relu",
+            "bias": 1.0,
             "weights": [
-                [1,2,3]
+                [2,1,4,3,-3],
+                [-1,4,-8,2,-9]
             ]
         }
-    ]
+    ],
+    "outputLayers": {
+        "neurons": 1,
+        "algorithm": "sigmoid",
+        "weights": [
+            [-3,2,-6]
+        ]
+    }
 }

@@ -1,19 +1,24 @@
 {
     "name": "XOR",
-    "inputCount": 2,
-    "inputWeights": [
-        [-10,20,20],
-        [30,-20,-20]
-    ],
-    "hiddenLayerCount": 1,
+    "inputLayerNeuron": 2,
+    "inputLayerBias": 1.0,
     "hiddenLayers": [
         {
             "id":1,
             "neurons": 2,
+            "algorithm": "sigmoid",
+            "bias": 1.0,
             "weights": [
-                [-30,20,20]
+                [-10,20,20],
+                [30,-20,-20]
             ]
         }
-        
-    ]
+    ],
+    "outputLayers": {
+        "neurons": 1,
+        "algorithm": "sigmoid",
+        "weights": [
+            [-30,20,20]
+        ]
+    }
 }
