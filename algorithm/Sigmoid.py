@@ -4,9 +4,8 @@
 import math
 
 
-def sigmoid(weight, input, bias):
+def sigmoid(weight, input):
     tot = 0
     for i in range(len(weight)):
         tot += weight[i] * input[i]
-    tot += bias
     return 1/(1+math.exp(-tot))
