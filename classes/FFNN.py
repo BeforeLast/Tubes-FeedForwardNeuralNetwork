@@ -57,7 +57,7 @@ class FFNN:
         self.dot = graphviz.Digraph(
             self.name,
             comment=self.name,
-            graph_attr={'rankdir': 'LR'}
+            graph_attr={'rankdir': 'LR'},
         )
         self.dot.filename = filename if filename.endswith("gv") \
             else filename + ".gv"
@@ -71,8 +71,7 @@ class FFNN:
             if(layer.name == "input"):
                 for i in range(len(self.input)):
                     neuron_name = layer.name + "-" + str(i + 1)
-                    self.dot.node(neuron_name, neuron_name+" : " +
-                                  str(self.input[i]))
+                    self.dot.node(neuron_name, neuron_name)
                     neurons.append(neuron_name)
             else:
                 for idx, neuron in enumerate(layer.getNeuronList()):
@@ -83,10 +82,6 @@ class FFNN:
                     self.dot.node(neuron_name, neuron_item)
                     neurons.append(neuron_name)
             neuron_names.append(neurons)
-
-        """Result"""
-        neuron_names.append(["result"])
-        self.dot.node("result", "Result = " + str(self.predict(self.input)))
 
         """Make Edges"""
         for idx in range(len(neuron_names)):
@@ -127,9 +122,6 @@ class FFNN:
             f'{SAVE_DIRECTORY}{filename}.png',
             width=1000, height=1000)
         )
-        
-        
-        
 
     def load(self, file_path: str = "model.json", ) -> None:
         """Load model from external file"""
