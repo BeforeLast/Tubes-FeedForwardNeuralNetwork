@@ -82,3 +82,4 @@ class Layer:
         for neuron in self.neurons:
             result += str(neuron)
         return result
+    

@@ -2,6 +2,7 @@ from typing import Any
 from classes.Layer import Layer
 import json
 import os
+import graphviz
 
 
 class FFNN:
@@ -11,6 +12,8 @@ class FFNN:
     name: str = None
     layers: list = None
     learning_rate: float = None
+    input: list = None
+    dot = graphviz.Digraph(name, comment=name,graph_attr={'rankdir':'LR'})
 
     # Methods
     def __init__(self, file_path: str = None) -> None:
@@ -41,6 +44,7 @@ class FFNN:
           input = [3.14, 1.618, 2.718]
 
         """
+        self.input = input
         result = input
         i = 1
         for layer in self.layers:
@@ -50,7 +54,37 @@ class FFNN:
 
     def visualize(self) -> Any:
         """Visualize FFNN model"""
-        pass
+        neuron_names = [] #place to store list of all neuron names
+
+        """Make Nodes"""
+        for layer in self.layers :
+            neurons = [] #list to store neuron name per layer
+            if(layer.name == "input") :
+                for i in range(len(self.input)) :
+                    neuron_name = layer.name + "-" + str(i + 1)
+                    self.dot.node(neuron_name, neuron_name+" : "+str(self.input[i]))
+                    neurons.append(neuron_name)
+            else : 
+                for idx, neuron in enumerate(layer.getNeuronList()) :
+                    neuron_name = layer.name + "-" + str(idx + 1)
+                    neuron_item = neuron_name+" : "+layer.algorithm + "=" + str(neuron.weight)
+                    self.dot.node(neuron_name, neuron_item)
+                    neurons.append(neuron_name)
+            neuron_names.append(neurons)
+
+        """Result"""
+        neuron_names.append(["result"])
+        self.dot.node("result", "Result = " + str(self.predict(self.input)))
+
+        """Make Edges"""
+        for idx in range(len(neuron_names)) : 
+            if(idx > 0) : 
+                for i in (neuron_names[idx]) : 
+                    for j in (neuron_names[idx-1]) : 
+                        self.dot.edge(j,i)
+
+        print(self.dot.source)
+        self.dot.render(directory="file", view=True)
 
     def load(self, file_path: str = "model.json", ) -> None:
         """Load model from external file"""

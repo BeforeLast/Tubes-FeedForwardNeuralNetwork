@@ -6,3 +6,4 @@ if __name__ == "__main__":
     print(f'0 XOR 1 = {Model.predict([0,1])}')
     print(f'1 XOR 0 = {Model.predict([1,0])}')
     print(f'1 XOR 1 = {Model.predict([1,1])}')
+    Model.visualize()

@@ -1,0 +1,16 @@
+digraph {
+	graph [rankdir=LR]
+	"input-1" [label="input-1 : 1"]
+	"input-2" [label="input-2 : 1"]
+	"Hidden Layer-1-1" [label="Hidden Layer-1-1 : sigmoid=[-10, 20, 20]"]
+	"Hidden Layer-1-2" [label="Hidden Layer-1-2 : sigmoid=[30, -20, -20]"]
+	"Output Layer-1" [label="Output Layer-1 : sigmoid=[-30, 20, 20]"]
+	result [label="Result = [4.543910487654583e-05]"]
+	"input-1" -> "Hidden Layer-1-1"
+	"input-2" -> "Hidden Layer-1-1"
+	"input-1" -> "Hidden Layer-1-2"
+	"input-2" -> "Hidden Layer-1-2"
+	"Hidden Layer-1-1" -> "Output Layer-1"
+	"Hidden Layer-1-2" -> "Output Layer-1"
+	"Output Layer-1" -> result
+}
