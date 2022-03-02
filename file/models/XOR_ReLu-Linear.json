@@ -1,0 +1,24 @@
+{
+    "name": "XOR ReLu-Linear",
+    "inputLayerNeuron": 2,
+    "inputLayerBias": 1.0,
+    "hiddenLayers": [
+        {
+            "id":1,
+            "neurons": 2,
+            "algorithm": "relu",
+            "bias": 1.0,
+            "weights": [
+                [0,1,1],
+                [-1,1,1]
+            ]
+        }
+    ],
+    "outputLayers": {
+        "neurons": 1,
+        "algorithm": "linear",
+        "weights": [
+            [0,1,-2]
+        ]
+    }
+}
