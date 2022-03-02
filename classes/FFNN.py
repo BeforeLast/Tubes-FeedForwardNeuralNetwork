@@ -34,22 +34,33 @@ class FFNN:
         """Add layer to model"""
         self.layers.append(layer)
 
-    def train(self, input: list[float], epoch: int = 10, ) -> None:
+    def train(self, data: list[float], epoch: int = 10, ) -> None:
         """Train model with given input"""
         pass
 
-    def predict(self, input: list[float]) -> list[float]:
+    def predict(self, data: list[float]) -> list[float]:
         """Predict output from given input
         example:
           input = [3.14, 1.618, 2.718]
 
         """
-        result = input
+        result = data
         i = 1
         for layer in self.layers:
             result = layer.calculate(result)
             i += 1
         return result
+    
+    def batch_predict(self, batch: list[list[float]]) -> list[list[float]]:
+        """Predict outputs from given inputs
+        example:
+          input = [[1, 2, 3], [4, 5, 6], [3.14, 1.618, 2.718]]
+        """
+        results = []
+        for data in batch:
+            results.append(self.predict(data))
+        return results
+            
 
     def visualize(self, filename: str = "Model") -> Any:
         self.dot = graphviz.Digraph(
