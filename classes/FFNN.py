@@ -6,6 +6,7 @@ import graphviz
 from pdf2image import convert_from_path
 from IPython.display import display, Image
 
+
 class FFNN:
     """Feed Forward Neural Network: class for Feed Forward
     Neural Network Model"""
@@ -25,7 +26,7 @@ class FFNN:
         else:
             try:
                 self.load(file_path)
-                print("NOTICE: MODEL LOADED SUCCESSFULLY!")
+                print(f"NOTICE: MODEL {self.name} LOADED SUCCESSFULLY!")
             except FileNotFoundError as fnfe:
                 print("NOTICE: UNABLE TO LOAD MODEL!")
                 print(fnfe)
@@ -50,7 +51,7 @@ class FFNN:
             result = layer.calculate(result)
             i += 1
         return result
-    
+
     def batch_predict(self, batch: list[list[float]]) -> list[list[float]]:
         """Predict outputs from given inputs
         example:
@@ -60,9 +61,9 @@ class FFNN:
         for data in batch:
             results.append(self.predict(data))
         return results
-            
 
     def visualize(self, filename: str = "Model") -> Any:
+        """ Visualize FFNN Model"""
         self.dot = graphviz.Digraph(
             self.name,
             comment=self.name,
@@ -70,11 +71,9 @@ class FFNN:
         )
         self.dot.filename = filename if filename.endswith("gv") \
             else filename + ".gv"
-        
-        """Visualize FFNN model"""
         neuron_names = []  # place to store list of all neuron names
 
-        """Make Nodes"""
+        # Make Nodes
         for layer in self.layers:
             neurons = []  # list to store neuron name per layer
             if(layer.name == "input"):
@@ -92,26 +91,26 @@ class FFNN:
                     neurons.append(neuron_name)
             neuron_names.append(neurons)
 
-        """Make Edges"""
+        # Make Edges
         for idx in range(len(neuron_names)):
             if(idx > 0):
                 for i in (neuron_names[idx]):
                     for j in (neuron_names[idx-1]):
                         self.dot.edge(j, i)
-        
-        """Remove existing visualization"""
+
+        # Remove existing visualization
         SAVE_DIRECTORY = ".\\file\\visualization\\"
         if os.path.exists(f'{SAVE_DIRECTORY}{filename}'):
             os.remove(f'{SAVE_DIRECTORY}{filename}')
         if os.path.exists(f'{SAVE_DIRECTORY}{filename}.pdf'):
             os.remove(f'{SAVE_DIRECTORY}{filename}.pdf')
-        
-        """Saving Graph"""
+
+        # Saving Graph
         self.dot.render(directory=SAVE_DIRECTORY, view=False)
-        
-        """Create PNG from PDF and delete PDF and GV file"""
+
+        # Create PNG from PDF and delete PDF and GV file
         POPPLER_PATH = '.\\ext_lib\\poppler\\Library\\bin'
-        
+
         # Saving Image
         images = convert_from_path(
             f'{SAVE_DIRECTORY}{filename}.gv.pdf',
@@ -121,12 +120,11 @@ class FFNN:
 
         for i, image in enumerate(images):    
             image.save(f"{SAVE_DIRECTORY}{filename}.png", "PNG")
-        
+
         # Deleting PDF and GV
         os.remove(f'{SAVE_DIRECTORY}{filename}.gv')
         os.remove(f'{SAVE_DIRECTORY}{filename}.gv.pdf')
-        
-        
+
         display(Image(
             f'{SAVE_DIRECTORY}{filename}.png',
             width=1000, height=1000)
