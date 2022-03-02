@@ -13,7 +13,6 @@ class FFNN:
     name: str = None
     layers: list = None
     learning_rate: float = None
-    input: list = None
     dot: graphviz.Digraph = None
 
     # Methods
@@ -45,7 +44,6 @@ class FFNN:
           input = [3.14, 1.618, 2.718]
 
         """
-        self.input = input
         result = input
         i = 1
         for layer in self.layers:
@@ -69,7 +67,7 @@ class FFNN:
         for layer in self.layers:
             neurons = []  # list to store neuron name per layer
             if(layer.name == "input"):
-                for i in range(len(self.input)):
+                for i in range(len(layer)):
                     neuron_name = layer.name + "-" + str(i + 1)
                     self.dot.node(neuron_name, neuron_name)
                     neurons.append(neuron_name)

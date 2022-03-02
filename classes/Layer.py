@@ -83,3 +83,6 @@ class Layer:
             result += str(neuron)
         return result
     
+    def __len__(self) -> int:
+        return len(self.neurons)
+    
