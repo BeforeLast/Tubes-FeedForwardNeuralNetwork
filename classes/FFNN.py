@@ -182,7 +182,7 @@ class FFNN:
         pass
 
     def __str__(self) -> str:
-        """Convert object to string"""
+        """Return class as a string"""
         result = "==========================================\n"
         result += f"MODEL : {self.name}\n"
         result += f"LEARNING_RATE : {self.learning_rate}\n"

@@ -33,6 +33,7 @@ class Neuron:
 
     # function to set weight to neuron
     def setWeight(self, new_weight: list[float]):
+        """Set Neuron's weight"""
         self.weight = new_weight
 
     def update(self, ) -> None:
@@ -40,5 +41,6 @@ class Neuron:
         pass
 
     def __str__(self) -> str:
+        """Return class as string"""
         result = f"    Neuron: {self.weight}\n"
         return result
