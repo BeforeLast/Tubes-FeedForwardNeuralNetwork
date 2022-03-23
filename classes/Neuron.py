@@ -1,3 +1,6 @@
+from unittest import case
+from algorithm.Error import error, softmaxError
+from algorithm.Gradient import derLinear, derRelu, derSigmoid, derSoftmax
 from algorithm.ReLU import relu
 from algorithm.Softmax import softmax
 from algorithm.Linear import linear
@@ -18,7 +21,7 @@ class Neuron:
 
     def calculate(self, input: list[float], ) -> float:
         """Calculate output with the given input"""
-        if self.algorithm is None:
+        if self.algorithm is None: #untuk input layer
             return input
         elif self.algorithm.lower() == "linear":
             return linear(self.weight, input)
@@ -26,9 +29,7 @@ class Neuron:
             return relu(self.weight, input)
         elif self.algorithm.lower() == "sigmoid":
             return sigmoid(self.weight, input)
-        elif self.algorithm.lower() == "softmax":
-            return softmax(input)
-        else:  # unknown algorithm
+        else:  # unknown algorithm or softmax (softmax juga cuma dipake di output layer, so just return input)
             return input
 
     # function to set weight to neuron
@@ -36,9 +37,30 @@ class Neuron:
         """Set Neuron's weight"""
         self.weight = new_weight
 
-    def update(self, ) -> None:
+    def update(self, output_error_array, self_output, learn_rate) -> None:
         """Update Neuron's weight"""
-        pass
+        # calculate hidden error
+        hiddenError = self_output*(1-self_output)*linear(self.weight,output_error_array)
+        # find gradient
+        if self.algorithm.lower() == "linear":
+            grad = derLinear(self_output)
+        elif self.algorithm.lower() == "relu":
+            grad = derRelu(self_output)
+        elif self.algorithm.lower() == "sigmoid":
+            grad = derSigmoid(self_output)
+        else: # softmax masuk sini dulu i think, buat output layer harusnya kan ga update weight
+            grad = derLinear(self_output)
+
+        grad = grad*-1*learn_rate
+
+        # update weight
+        # pls cmiiw, deltaweight = grad * hiddenError * currentweight
+        for i in range (len(self.weight)):
+            self.weight[i] = self.weight[i] + grad * hiddenError * self.weight[i]
+
+    def getHiddenError(self, output_error_array, self_output):
+        hiddenError = self_output*(1-self_output)*linear(self.weight,output_error_array)
+        return hiddenError
 
     def __str__(self) -> str:
         """Return class as string"""

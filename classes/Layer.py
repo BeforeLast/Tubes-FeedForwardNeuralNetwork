@@ -1,3 +1,5 @@
+from algorithm.Error import error, softmaxError
+from algorithm.Softmax import softmax
 from classes.Neuron import Neuron
 
 
@@ -69,6 +71,10 @@ class Layer:
 
         if self.algorithm == "input":
             output.extend(input)
+        elif (self.algorithm == "softmax"):
+            #softmax returns an array of curvalueinneuron/sum(allvalueinneuron)
+            #only use softmax in output layer
+            output = softmax(input)
         else:
             for neuron in self.neurons:
                 curNeuronCalc = neuron.calculate(input)
@@ -76,9 +82,30 @@ class Layer:
 
         return output
 
-    def update(self,) -> None:
+    def update(self, outputArr, targetArr, learn_rate) -> None:
         """Update each neurons"""
-        pass
+        #find neuron outputs
+        neuron_outputs = []
+        for neuron in self.neurons:
+            neuron_outputs.append(neuron.calculate(targetArr))
+
+        # outputArr is the output of current layer
+        # targetArr is array of actual target / target dari next layer
+        if self.name.lower() == "output layer":
+            if self.algorithm == "softmax":
+                error_array = softmaxError(outputArr)
+            else:
+                errTerm = error(targetArr, outputArr)
+                error_array = [errTerm for i in range (len(outputArr))]
+        else: #hidden layer
+            # get neuron errors
+            error_array = []
+            for i in range (len(self.neurons)):
+                error_array.append(self.neurons[i].getHiddenError(outputArr, neuron_outputs[i]))
+        
+        #update weights
+        for i in range(len(self.neurons)):
+            self.neurons[i].update(error_array, neuron_outputs[i], learn_rate)
 
     def __str__(self) -> str:
         """Return class as a string"""
