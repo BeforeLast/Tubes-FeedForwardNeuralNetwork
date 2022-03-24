@@ -1,6 +1,5 @@
 import math
 
-
 # linear derivative
 def derLinear(x):
     return 1
@@ -16,8 +15,3 @@ def derSigmoid(x):
 # softmax derivative
 def derSoftmax(x, j, targetClass):
     return x if j == targetClass else -1+x
-
-# gradient
-# spek 1f
-def gradient(oj, tj, xji):
-    return -(tj-oj)*oj*(1-oj)*xji

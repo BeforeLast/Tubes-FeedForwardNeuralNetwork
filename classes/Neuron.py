@@ -1,5 +1,5 @@
 from unittest import case
-from algorithm.Error import error, softmaxError
+from algorithm.Error import softmaxError
 from algorithm.Gradient import derLinear, derRelu, derSigmoid, derSoftmax
 from algorithm.ReLU import relu
 from algorithm.Softmax import softmax
@@ -36,31 +36,45 @@ class Neuron:
     def setWeight(self, new_weight: list[float]):
         """Set Neuron's weight"""
         self.weight = new_weight
-
-    def update(self, output_error_array, self_output, learn_rate) -> None:
+    
+    def getWeight(self) -> list[float]:
+        """Return copy of neuron's weight"""
+        return self.weight.copy()
+    
+    def update(self, delta_weight: list[float]) -> None:
         """Update Neuron's weight"""
-        # calculate hidden error
-        hiddenError = self_output*(1-self_output)*linear(self.weight,output_error_array)
-        # find gradient
-        if self.algorithm.lower() == "linear":
-            grad = derLinear(self_output)
-        elif self.algorithm.lower() == "relu":
-            grad = derRelu(self_output)
-        elif self.algorithm.lower() == "sigmoid":
-            grad = derSigmoid(self_output)
-        else: # softmax masuk sini dulu i think, buat output layer harusnya kan ga update weight
-            grad = derLinear(self_output)
-
-        grad = grad*-1*learn_rate
-
-        # update weight
-        # pls cmiiw, deltaweight = grad * hiddenError * currentweight
         for i in range (len(self.weight)):
-            self.weight[i] = self.weight[i] + grad * hiddenError * self.weight[i]
+            self.weight[i] += delta_weight[i]
 
-    def getHiddenError(self, output_error_array, self_output):
-        hiddenError = self_output*(1-self_output)*linear(self.weight,output_error_array)
-        return hiddenError
+    def errorTerm(self,
+        input: float = None, output: float = None, label: float = None,
+        output_neuron: bool = None, sigma: float = None,
+        softmax: float = None):
+        """Calculate neuron's errorterm"""
+        if output_neuron:
+            # Errorterm if neuron is at output layer
+            if self.algorithm is None: #untuk input layer
+                return input
+            elif self.algorithm.lower() == "linear":
+                return derLinear(output) * (output-label)
+            elif self.algorithm.lower() == "relu":
+                return derRelu(output) * (output-label)
+            elif self.algorithm.lower() == "sigmoid":
+                return derSigmoid(output) * (output-label)
+            else: # TODO: softmax
+                return 0
+        else:
+            # Errorterm if neuron is not at hidden layer
+            if self.algorithm is None: #untuk input layer
+                return input
+            elif self.algorithm.lower() == "linear":
+                return derLinear(output) * sigma
+            elif self.algorithm.lower() == "relu":
+                return derRelu(output) * sigma
+            elif self.algorithm.lower() == "sigmoid":
+                return derSigmoid(output) * sigma
+            else: # TODO: softmax
+                return 0
 
     def __str__(self) -> str:
         """Return class as string"""
