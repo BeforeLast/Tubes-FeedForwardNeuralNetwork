@@ -100,12 +100,14 @@ class FFNN:
                 sigma_deltaw = arrayAdd(sigma_deltaw, batch_deltaw)
             self.update(sigma_deltaw)
             
-            if (treshold and SSE(train_label, output) <= treshold):
+            if (treshold and sigma_error <= treshold):
                 # If SSE <= error treshold, break from training
                 print(f'Model successfully trained in {repeat+1} epoch')
-                print(f'Current cumulative error: {SSE(train_label, output)}')
+                print(f'Current cumulative error: {sigma_error}')
                 return
         print(f'Model successfully trained!')
+        print(f'Model successfully trained in {repeat+1} epoch')
+        print(f'Current cumulative error: {sigma_error}')
 
     def predict(self, data: list[float]) -> list[float]:
         """Predict output from given input
