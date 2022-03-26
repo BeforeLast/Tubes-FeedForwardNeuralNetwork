@@ -35,7 +35,7 @@ def SSE(label:list[float], prediction: list[float]) -> float:
     E = 1/2 * sigma(0->k, (label_k - prediction_k)**2)"""
     err = 0
     for i in range(len(label)):
-        err += label[i] - prediction[i]
+        err += (label[i] - prediction[i])**2
     err *= 0.5
     return err
 
