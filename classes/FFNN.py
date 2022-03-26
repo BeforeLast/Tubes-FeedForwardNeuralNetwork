@@ -1,6 +1,6 @@
 from random import sample
 from typing import Any
-from algorithm.Error import SSE
+from algorithm.Error import SSE, CrossEntropy
 from algorithm.Util import arrayAdd
 from classes.Layer import Layer
 import json
@@ -42,7 +42,13 @@ class FFNN:
         data: list[list[float]], label: list[list[float]],
         epoch: int = 1, batch_size: int = 1,
         treshold: float = None) -> None:
-        """Train model with given input"""
+        """Train model with given input
+        data        : list of data
+        label       : list of label
+        epoch       : maximum iteration
+        batch_size  : how many data to be tested before updating weight
+        treshold    : maximum value of cumulated error
+        """
         if batch_size <= 0:
             raise ValueError(
                 "Batch size must be an integer larger than 0")
@@ -65,7 +71,12 @@ class FFNN:
                 output = self.predict(data[random_data_idx[nthbatch]])
                 train_label = label[random_data_idx[nthbatch]]
                 ## Add error to cumulative error
-                sigma_error += SSE(train_label,output)
+                if self.layers[-1].getAlgorithm().lower() == "softmax":
+                    # Use Cross Entropy for softmax
+                    sigma_error += CrossEntropy(train_label, output)
+                else:
+                    # Use SSE for other algorithm
+                    sigma_error += SSE(train_label, output)
                 batch_deltaw = []
                 # Back Propagation
                 # Output errorterm calculation

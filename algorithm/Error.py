@@ -1,24 +1,46 @@
 import math
 # array of output
 # output: array of errors
-def softmaxError(o):
-    err = []
-    for i in o:
-        err.append(-math.log(i))
-    return err
+def CrossEntropy(label: list[float], prediction: list[float]) -> float:
+    """Cross Entropy Error:
+    E = sigma(0->k,
+          (label_k)*log(prediction_k) + (1 - label_k)*log(1 - prediction_k)
+        )
+    """
+    sigma_err = 0
+    for i in range(len(label)):
+        if label[i] == 1:
+            sigma_err += -math.log(1 - prediction[i])
+        else:
+            sigma_err += -math.log(prediction[i])
+    return sigma_err
+
+def derCrossEntropy(label_j:float, preditiction_j:float) -> float:
+    """Return the derivative cross entropy value from the
+    given label and prediction
+    return prediction_j - 1 if label is 1
+    return prediction_j if label is 0
+    """
+    if label_j == 1:
+        return preditiction_j - 1
+    else:
+        return preditiction_j
 
 # array of target
 # array of output
 # both have same length
 # output: error value
-def SSE(t:list[float], o: list[float]):
+def SSE(label:list[float], prediction: list[float]) -> float:
     """Sum Squared Error:
-    E = 1/2 * sigma(0->k, (tk - to)**2)"""
+    E = 1/2 * sigma(0->k, (label_k - prediction_k)**2)"""
     err = 0
-    for i in range(len(t)):
-        err += t[i] - o[i]
+    for i in range(len(label)):
+        err += label[i] - prediction[i]
     err *= 0.5
     return err
 
-def derSSE(target_j:float, output_j:float):
-    return output_j - target_j
+def derSSE(label_j:float, preditiction_j:float) -> float:
+    """Return the derivative value of Sum Squared Error:
+    return prediction_j - label_j"""
+    return preditiction_j - label_j
+

@@ -5,9 +5,9 @@
 import math
 
 
-def softmax(outputs):
-    map(lambda x: math.exp(x), outputs)
-    tot = sum(outputs)
-    for i in range(len(outputs)):
-        outputs[i] = outputs[i]/tot
+def softmax(inputs: list[float]):
+    sigma_ex = sum([math.exp(xi) for xi in inputs])
+    outputs = [0 for _ in inputs]
+    for i in range(len(inputs)):
+        outputs[i] = math.exp(inputs[i])/sigma_ex
     return outputs

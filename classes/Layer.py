@@ -1,8 +1,6 @@
 from __future__ import annotations
-from algorithm.Error import SSE, derSSE, softmaxError
 from algorithm.Softmax import softmax
 from classes.Neuron import Neuron
-
 
 class Layer:
     """Layer Class"""
@@ -31,6 +29,10 @@ class Layer:
         self.neurons = []
         for i in range(n_neurons):
             self.neurons.append(Neuron(algorithm, []))
+
+    def getAlgorithm(self) -> str:
+        """Return layer's algorithm"""
+        return self.algorithm
 
     # getter setter neuron list
     def getNeuronList(self) -> list[Neuron]:
@@ -97,21 +99,17 @@ class Layer:
         """
         errors = [0 for _ in self.neurons]
         if self.name.lower() == "output layer":
-            # Process output layer error
+            # Process output layer error term
             for i in range(len(self.neurons)):
-                if self.algorithm == "softmax":
-                    # TODO: softmax
-                    pass
-                else:
-                    errors[i] = self.neurons[i].errorTerm(
-                        output=self.output_history[i],
-                        label=labels[i],
-                        output_neuron=True)
+                errors[i] = self.neurons[i].errorTerm(
+                    output=self.output_history[i],
+                    label=labels[i],
+                    output_neuron=True)
         elif self.name.lower() == "input layer":
             # Skip input layer (does not have weights)
             pass
         else:
-            # Process hidden layer error
+            # Process hidden layer error term
             weight_offset = 1 # 0th index for bias's weight
             for i in range (len(self.neurons)):
                 # Get nth weights of next layer

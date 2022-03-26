@@ -1,8 +1,7 @@
 from unittest import case
-from algorithm.Error import softmaxError
-from algorithm.Gradient import derLinear, derRelu, derSigmoid, derSoftmax
+from algorithm.Error import derCrossEntropy, derSSE
+from algorithm.Gradient import derLinear, derRelu, derSigmoid
 from algorithm.ReLU import relu
-from algorithm.Softmax import softmax
 from algorithm.Linear import linear
 from algorithm.Sigmoid import sigmoid
 
@@ -48,21 +47,20 @@ class Neuron:
 
     def errorTerm(self,
         input: float = None, output: float = None, label: float = None,
-        output_neuron: bool = None, sigma: float = None,
-        softmax: float = None):
+        output_neuron: bool = None, sigma: float = None) -> float: 
         """Calculate neuron's errorterm"""
         if output_neuron:
             # Errorterm if neuron is at output layer
             if self.algorithm is None: #untuk input layer
                 return input
             elif self.algorithm.lower() == "linear":
-                return derLinear(output) * (output-label)
+                return derLinear(output) * derSSE(label, output)
             elif self.algorithm.lower() == "relu":
-                return derRelu(output) * (output-label)
+                return derRelu(output) * derSSE(label, output)
             elif self.algorithm.lower() == "sigmoid":
-                return derSigmoid(output) * (output-label)
-            else: # TODO: softmax
-                return 0
+                return derSigmoid(output) * derSSE(label, output)
+            else: # softmax
+                return derCrossEntropy(label, output)
         else:
             # Errorterm if neuron is not at hidden layer
             if self.algorithm is None: #untuk input layer
@@ -73,7 +71,7 @@ class Neuron:
                 return derRelu(output) * sigma
             elif self.algorithm.lower() == "sigmoid":
                 return derSigmoid(output) * sigma
-            else: # TODO: softmax
+            else: # TODO: softmax in hidden layer
                 return 0
 
     def __str__(self) -> str:
