@@ -25,7 +25,7 @@ class FFNN:
         if file_path is None:
             self.layers = []
             self.name = ""
-            self.learning_rate = 0.0
+            self.learning_rate = None
         else:
             try:
                 self.load(file_path)
