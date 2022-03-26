@@ -102,7 +102,7 @@ class FFNN:
             
             if (treshold and SSE(train_label, output) <= treshold):
                 # If SSE <= error treshold, break from training
-                print(f'Model successfully trained in {repeat} epoch')
+                print(f'Model successfully trained in {repeat+1} epoch')
                 print(f'Current cumulative error: {SSE(train_label, output)}')
                 return
         print(f'Model successfully trained!')
