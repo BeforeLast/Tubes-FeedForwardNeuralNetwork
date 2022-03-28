@@ -164,7 +164,7 @@ class Layer:
             # print(self.errorterm_history[i])
             # print(self.input_history)
             delta_weights[i] = \
-            [-learing_rate * self.errorterm_history[i] * 
+            [learing_rate * self.errorterm_history[i] * 
             inputxji for inputxji in self.input_history]
         return delta_weights
 

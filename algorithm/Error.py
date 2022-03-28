@@ -42,5 +42,5 @@ def SSE(label:list[float], prediction: list[float]) -> float:
 def derSSE(label_j:float, preditiction_j:float) -> float:
     """Return the derivative value of Sum Squared Error:
     return prediction_j - label_j"""
-    return preditiction_j - label_j
+    return label_j - preditiction_j
 
