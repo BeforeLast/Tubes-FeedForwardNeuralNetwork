@@ -10,7 +10,7 @@ def derRelu(x):
 
 # sigmoid derivative
 def derSigmoid(x):
-    return 1/(1+math.exp(-x)) * (1 - 1/(1+math.exp(-x)))
+    return x * (1 - x)
 
 # softmax derivative
 def derSoftmax(x, j, targetClass):

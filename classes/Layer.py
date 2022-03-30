@@ -1,4 +1,6 @@
 from __future__ import annotations
+from distutils.log import error
+import sys
 from algorithm.Softmax import softmax
 from classes.Neuron import Neuron
 
@@ -27,7 +29,7 @@ class Layer:
         self.name = name
         self.layer_bias = layer_bias
         self.neurons = []
-        for i in range(n_neurons):
+        for _ in range(n_neurons):
             self.neurons.append(Neuron(algorithm, []))
 
     def getAlgorithm(self) -> str:
@@ -153,18 +155,15 @@ class Layer:
             self.neurons[i].update(delta_weights[i])
     
     def calculateNeuronsDeltaWeights(self,
-        learing_rate:float) -> list[list[float]]:
+        learning_rate:float) -> list[list[float]]:
         """Return neurons delta weights"""
         delta_weights = [[] for _ in self.neurons]
         # Iterate through all neurons
         if self.name.lower() == "input layer":
             return delta_weights
         for i in range(len(self.neurons)):
-            # print(learing_rate)
-            # print(self.errorterm_history[i])
-            # print(self.input_history)
             delta_weights[i] = \
-            [learing_rate * self.errorterm_history[i] * 
+            [-1 * learning_rate * self.errorterm_history[i] * 
             inputxji for inputxji in self.input_history]
         return delta_weights
 

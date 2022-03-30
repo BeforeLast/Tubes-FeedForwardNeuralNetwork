@@ -1,7 +1,7 @@
 from random import sample
 from typing import Any
 from algorithm.Error import SSE, CrossEntropy
-from algorithm.Util import arrayAdd
+from algorithm.Util import arrayAdd, progressBar
 from classes.Layer import Layer
 import json
 import os
@@ -9,6 +9,7 @@ import graphviz
 from pdf2image import convert_from_path
 from IPython.display import display, Image
 import numpy as np
+import sys
 
 class FFNN:
     """Feed Forward Neural Network: class for Feed Forward
@@ -40,7 +41,7 @@ class FFNN:
 
     def train(self,
         data: list[list[float]], label: list[list[float]],
-        epoch: int = 1, batch_size: int = 1,
+        epoch: int = 1, batch_size: int = None,
         treshold: float = None) -> None:
         """Train model with given input
         data        : list of data
@@ -49,6 +50,8 @@ class FFNN:
         batch_size  : how many data to be tested before updating weight
         treshold    : maximum value of cumulated error
         """
+        if batch_size is None:
+            batch_size = len(data)
         if batch_size <= 0:
             raise ValueError(
                 "Batch size must be an integer larger than 0")
@@ -56,6 +59,7 @@ class FFNN:
             raise ValueError(
                 "Batch size cannot be larger than training data size")
         for repeat in range(epoch):
+            print(f"\nEpoch {repeat} / {epoch}")
             # Get sample data
             random_data_idx = sample(range(len(data)), batch_size)
             # Reset cumulative error
@@ -66,6 +70,8 @@ class FFNN:
                     for neuron in layer.getNeuronList()]
                         for layer in self.layers]
             for nthbatch in range(batch_size):
+                sys.stdout.write(f"\r{nthbatch+1}/{batch_size} {progressBar(nthbatch+1, batch_size)} loss:{round(sigma_error, 5)}")
+                sys.stdout.flush()
                 # Forward Propagation
                 ## Do prediction
                 output = self.predict(data[random_data_idx[nthbatch]])
@@ -102,11 +108,12 @@ class FFNN:
             
             if (treshold and sigma_error <= treshold):
                 # If SSE <= error treshold, break from training
-                print(f'Model successfully trained in {repeat+1} epoch')
+                print()
+                print(f'Stopped training after {repeat+1} epoch')
                 print(f'Current cumulative error: {sigma_error}')
                 return
+        print()
         print(f'Model successfully trained!')
-        print(f'Model successfully trained in {repeat+1} epoch')
         print(f'Current cumulative error: {sigma_error}')
 
     def predict(self, data: list[float]) -> list[float]:
