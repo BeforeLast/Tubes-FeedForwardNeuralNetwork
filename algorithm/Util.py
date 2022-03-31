@@ -34,6 +34,7 @@ versicolor  0       0           0
 virginica   0       0           0
 referensi gw: https://www.analyticsvidhya.com/blog/2021/06/confusion-matrix-for-multi-class-classification/#:~:text=The%20confusion%20matrix%20is%20a,and%20False%20Negative(FN).
 '''
+#x TRUE, y PREDICTION
 def findConfusionMatrix(x,y):
     confusionMatrix = [[0,0,0], [0,0,0], [0,0,0]]
     for i in range (len(x)):
@@ -74,16 +75,17 @@ def getTrueNegative(confusionMatrix, index):
     #else
     return confusionMatrix[0][0] + confusionMatrix[0][1] + confusionMatrix[1][0] + confusionMatrix[1][1]
 
-#return tp+fp+tn+fn
-def getTotal(confusionMatrix, index):
-    return getTruePositive(confusionMatrix, index) + getFalsePositive(confusionMatrix, index) + getTrueNegative(confusionMatrix, index) + getFalseNegative(confusionMatrix, index)
+def getTotal(confusionMatrix):
+    sum = 0
+    for row in confusionMatrix:
+        for element in row:
+            sum+= element
+    return sum
 
-def getAccuracy(confusionMatrix, index):
-    #pake index, buat indicate 0,1,2
-    # (tp+tn)/(tp+fp+tn+fn)
-    if (getTotal(confusionMatrix, index) == 0):
-        return 0
-    return (getTruePositive(confusionMatrix, index) + getTrueNegative(confusionMatrix, index)) / (getTotal(confusionMatrix, index))
+def getAccuracy(confusionMatrix):
+    # sum of diagonal / total
+    # gw dpt dari sini: https://arxiv.org/pdf/2008.05756.pdf#:~:text=Accuracy%20is%20one%20of%20the,computed%20from%20the%20confusion%20matrix.&text=The%20formula%20of%20the%20Accuracy,confusion%20matrix%20at%20the%20denominator.
+    return ((confusionMatrix[0][0] + confusionMatrix[1][1] + confusionMatrix[2][2]) / getTotal(confusionMatrix))
 
 def getPrecision(confusionMatrix, index):
     #tp + tp/fp
@@ -97,8 +99,22 @@ def getRecall(confusionMatrix, index):
         return 0
     return (getTruePositive(confusionMatrix, index)) / (getTruePositive(confusionMatrix, index) + getFalseNegative(confusionMatrix, index))
 
-def getF1Score(confusionMatrix, index):
+def getMacroPrecision(confusionMatrix):
+    sum = 0
+    #matrixnya always nxn, in this case 3x3 so this is fine
+    for i in range(len(confusionMatrix)):
+        sum += getPrecision(confusionMatrix,i)
+    return sum/len(confusionMatrix)
+
+def getMacroRecall(confusionMatrix):
+    sum = 0
+    #matrixnya always nxn, in this case 3x3 so this is fine
+    for i in range(len(confusionMatrix)):
+        sum += getRecall(confusionMatrix,i)
+    return sum/len(confusionMatrix)
+
+def getMacroF1Score(confusionMatrix):
     #2* precision*recall/(precision+recall)
-    if (getPrecision(confusionMatrix, index) + getRecall(confusionMatrix, index) == 0):
+    if (getMacroPrecision(confusionMatrix) + getMacroRecall(confusionMatrix)) == 0:
         return 0
-    return 2 * (getPrecision(confusionMatrix, index) * getRecall(confusionMatrix, index)) / (getPrecision(confusionMatrix, index) + getRecall(confusionMatrix, index))
+    return 2 * (getMacroPrecision(confusionMatrix) * getMacroRecall(confusionMatrix)) / (getMacroPrecision(confusionMatrix) + getMacroRecall(confusionMatrix))
