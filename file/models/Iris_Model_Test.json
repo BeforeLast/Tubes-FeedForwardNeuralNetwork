@@ -1,5 +1,5 @@
 {
-    "name": "XOR Sigmoid",
+    "name": "Iris",
     "inputLayerNeuron": 3,
     "inputLayerBias": 1.0,
     "hiddenLayers": [
