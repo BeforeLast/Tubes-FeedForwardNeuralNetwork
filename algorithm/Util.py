@@ -1,4 +1,6 @@
+from calendar import c
 from math import floor
+import json
 
 
 def arrayAdd(A, B):
@@ -118,3 +120,79 @@ def getMacroF1Score(confusionMatrix):
     if (getMacroPrecision(confusionMatrix) + getMacroRecall(confusionMatrix)) == 0:
         return 0
     return 2 * (getMacroPrecision(confusionMatrix) * getMacroRecall(confusionMatrix)) / (getMacroPrecision(confusionMatrix) + getMacroRecall(confusionMatrix))
+
+def save(self, model_name: str="TrainModel", file_path: str = "model.json", ) -> None:
+        """Save model to external file"""
+        #dictionary that will be written to .json file
+        model_temp = {}
+
+        model_temp["name"] = model_name
+
+        #get all layers
+        all_layers = self.layers
+
+        #get input layer 
+        input_layer = all_layers[0]
+        
+        #get number of neuron in input layer
+        input_layer_length = len(input_layer.getNeuronList())
+        model_temp["inputLayerNeuron"] = input_layer_length
+
+        #get input layer bias 
+        input_layer_bias = input_layer.layer_bias
+        model_temp["inputLayerBias"] = input_layer_bias
+
+        #list of hiddenlayers
+        hidden_layers = []
+
+        #loop over the model layers 
+        for i in range(1, len(all_layers) - 1) : 
+            #one hidden layer 
+            hidden_layer = {}
+
+            #current_layer
+            current_layer = all_layers[i]
+
+            #get list of neurons
+            neurons = current_layer.getNeuronList()
+
+            #assigning hidden_layer attribute 
+            hidden_layer["id"] = i
+            hidden_layer["neurons"] = len(neurons)
+            hidden_layer["algorithm"] = len(current_layer.getAlgorithm())
+            hidden_layer["bias"] = current_layer.layer_bias
+            
+            #list of weights
+            weights = []
+            #loop over neurons 
+            for neuron in neurons : 
+                weights.append(neuron.weight)
+            
+            hidden_layer["weights"] = weights
+
+            hidden_layers.append(hidden_layer)
+
+        model_temp["hiddenLayers"] = hidden_layers
+
+        #initiate output_layer that will be written
+        output = {}
+
+        #get output layer
+        output_layer = all_layers[len(all_layers) - 1]
+
+        output_layer_neurons = output_layer.getNeuronList() 
+        output["neurons"] = len(output_layer_neurons)
+        
+        output_weights = []
+        
+        for output_neuron in (output_layer_neurons) :
+            output_weights.append(output_neuron.weight)
+
+        output["weights"] = output_weights        
+        model_temp["outputLayers"] = output
+        # Serializing json 
+        json_object = json.dumps(model_temp, indent = 2)
+        
+        # Writing to sample.json
+        with open(file_path, "w") as outfile:
+            outfile.write(json_object)   
