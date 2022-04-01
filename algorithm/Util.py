@@ -121,7 +121,7 @@ def getMacroF1Score(confusionMatrix):
         return 0
     return 2 * (getMacroPrecision(confusionMatrix) * getMacroRecall(confusionMatrix)) / (getMacroPrecision(confusionMatrix) + getMacroRecall(confusionMatrix))
 
-def save(self, model_name: str="TrainModel", file_path: str = "model.json", ) -> None:
+def save(model, model_name: str="TrainModel", file_path: str = "model.json", ) -> None:
         """Save model to external file"""
         #dictionary that will be written to .json file
         model_temp = {}
@@ -129,7 +129,7 @@ def save(self, model_name: str="TrainModel", file_path: str = "model.json", ) ->
         model_temp["name"] = model_name
 
         #get all layers
-        all_layers = self.layers
+        all_layers = model.layers
 
         #get input layer 
         input_layer = all_layers[0]
