@@ -42,7 +42,7 @@ class FFNN:
     def train(self,
         data: list[list[float]], label: list[list[float]],
         epoch: int = 1, batch_size: int = None,
-        treshold: float = None) -> None:
+        treshold: float = None, verbose: bool = True,) -> None:
         """Train model with given input
         data        : list of data
         label       : list of label
@@ -59,7 +59,8 @@ class FFNN:
             raise ValueError(
                 "Batch size cannot be larger than training data size")
         for repeat in range(epoch):
-            print(f"\nEpoch {repeat} / {epoch}")
+            if verbose:
+                print(f"\nEpoch {repeat} / {epoch}")
             # Get sample data
             random_data_idx = sample(range(len(data)), batch_size)
             # Reset cumulative error
@@ -70,8 +71,6 @@ class FFNN:
                     for neuron in layer.getNeuronList()]
                         for layer in self.layers]
             for nthbatch in range(batch_size):
-                sys.stdout.write(f"\r{nthbatch+1}/{batch_size} {progressBar(nthbatch+1, batch_size)} loss:{round(sigma_error, 5)}")
-                sys.stdout.flush()
                 # Forward Propagation
                 ## Do prediction
                 output = self.predict(data[random_data_idx[nthbatch]])
@@ -104,6 +103,12 @@ class FFNN:
                 
                 # Add batch_deltaw to sigma_deltaw
                 sigma_deltaw = arrayAdd(sigma_deltaw, batch_deltaw)
+                if verbose:
+                    to_write = ""
+                    to_write += f" loss:{round(sigma_error, 5)}"
+                    sys.stdout.write(f"\r{nthbatch+1}/{batch_size} {progressBar(nthbatch+1, batch_size)}{to_write}")
+                    sys.stdout.flush()
+
             self.update(sigma_deltaw)
             
             if (treshold and sigma_error <= treshold):
@@ -263,9 +268,82 @@ class FFNN:
         else:
             raise FileNotFoundError("Invalid path")
 
-    def save(self, file_path: str = "model.json", ) -> None:
+    def save(self, model_name: str="TrainModel", file_path: str = "model.json", ) -> None:
         """Save model to external file"""
-        pass
+        #dictionary that will be written to .json file
+        model_temp = {}
+
+        model_temp["name"] = model_name
+
+        #get all layers
+        all_layers = self.layers
+
+        #get input layer 
+        input_layer = all_layers[0]
+        
+        #get number of neuron in input layer
+        input_layer_length = len(input_layer.getNeuronList())
+        model_temp["inputLayerNeuron"] = input_layer_length
+
+        #get input layer bias 
+        input_layer_bias = input_layer.layer_bias
+        model_temp["inputLayerBias"] = input_layer_bias
+
+        #list of hiddenlayers
+        hidden_layers = []
+
+        #loop over the model layers 
+        for i in range(1, len(all_layers) - 1) : 
+            #one hidden layer 
+            hidden_layer = {}
+
+            #current_layer
+            current_layer = all_layers[i]
+
+            #get list of neurons
+            neurons = current_layer.getNeuronList()
+
+            #assigning hidden_layer attribute 
+            hidden_layer["id"] = i
+            hidden_layer["neurons"] = len(neurons)
+            hidden_layer["algorithm"] = len(current_layer.getAlgorithm())
+            hidden_layer["bias"] = current_layer.layer_bias
+            
+            #list of weights
+            weights = []
+            #loop over neurons 
+            for neuron in neurons : 
+                weights.append(neuron.weight)
+            
+            hidden_layer["weights"] = weights
+
+            hidden_layers.append(hidden_layer)
+
+        model_temp["hiddenLayers"] = hidden_layers
+
+        #initiate output_layer that will be written
+        output = {}
+
+        #get output layer
+        output_layer = all_layers[len(all_layers) - 1]
+
+        output_layer_neurons = output_layer.getNeuronList() 
+        output["neurons"] = len(output_layer_neurons)
+        output["algorithm"] = output_layer.algorithm
+        
+        output_weights = []
+        
+        for output_neuron in (output_layer_neurons) :
+            output_weights.append(output_neuron.weight)
+
+        output["weights"] = output_weights        
+        model_temp["outputLayers"] = output
+        # Serializing json 
+        json_object = json.dumps(model_temp, indent = 2)
+        
+        # Writing to sample.json
+        with open(file_path, "w") as outfile:
+            outfile.write(json_object)   
 
     def __str__(self) -> str:
         """Return class as a string"""

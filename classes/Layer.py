@@ -1,6 +1,4 @@
 from __future__ import annotations
-from distutils.log import error
-import sys
 from algorithm.Softmax import softmax
 from classes.Neuron import Neuron
 
@@ -82,7 +80,7 @@ class Layer:
         elif (self.algorithm == "softmax"):
             #softmax returns an array of curvalueinneuron/sum(allvalueinneuron)
             #only use softmax in output layer
-            output = softmax(input)
+            output = softmax(input[1:]) # only take neuron output, not bias
         else:
             for neuron in self.neurons:
                 curNeuronCalc = neuron.calculate(input)
@@ -123,7 +121,7 @@ class Layer:
                         * nextLayer.errorterm_history[j]
 
                 errors[i] = self.neurons[i].errorTerm(
-                    output=self.output_history[i],
+                    output=self.output_history[i + weight_offset],
                     sigma=sigma)
         self.errorterm_history = errors
 
